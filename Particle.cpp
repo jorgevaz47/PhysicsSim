@@ -21,4 +21,5 @@ void Particle::SetMass(float newMass){
 
 std::ostream &operator<<(std::ostream &output, Particle const &particle){
     output << "Particle is at " << particle.GetPosition() << " with a velocity of " << particle.GetVelocity() << " and a mass of " << particle.GetMass();
+    return output;
 }

@@ -1,5 +1,7 @@
 #include "Vector2D.h"
 #include "Vector2D.cpp"
+#include "Particle.h"
+#include "Particle.cpp"
 #include "iostream"
 #include <iomanip>
 
@@ -25,5 +27,11 @@ int main(){
     
     cout << "Second 2D vector:" << endl;
     cout << "X: " << secondVector2D.GetX() << "\tY: " << secondVector2D.GetY() << endl;
+
+    Particle firstParticle();
+    Particle secondParticle(firstVector2D, secondVector2D, 10.0);
+
+    cout << firstParticle << endl;
+    cout << secondParticle << endl;
 
 }
