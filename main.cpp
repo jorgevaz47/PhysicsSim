@@ -4,34 +4,20 @@
 #include "Particle.cpp"
 #include "iostream"
 #include <iomanip>
+#include <random>
 
 using namespace std;
 
 int main(){
-    Vector2D firstVector2D(10.0, 12.0);
-    Vector2D secondVector2D(-5.0, 25);
 
-    cout << "First 2D vector:" << endl;
-    cout << "X: " << firstVector2D.GetX() << "\tY: " << firstVector2D.GetY() << endl;
-    
-    cout << "Second 2D vector:" << endl;
-    cout << "X: " << secondVector2D.GetX() << "\tY: " << secondVector2D.GetY() << endl;
+    default_random_engine generator;
+    uniform_int_distribution<int> height(50, 100);
+    uniform_int_distribution<int> velocity(1, 20);
+    int y_pos = height(generator);
+    int x_vel = velocity(generator);
+    int y_vel = velocity(generator);
 
-    Vector2D resultSum = firstVector2D + secondVector2D;
+    Particle particleOne = Particle(Vector2D(0, y_pos), Vector2D(x_vel, y_vel));
 
-    cout << "First 2D Vector + Second 2D Vector:" << endl;
-    cout << resultSum << endl;
-
-    cout << "First 2D vector:" << endl;
-    cout << "X: " << firstVector2D.GetX() << "\tY: " << firstVector2D.GetY() << endl;
-    
-    cout << "Second 2D vector:" << endl;
-    cout << "X: " << secondVector2D.GetX() << "\tY: " << secondVector2D.GetY() << endl;
-
-    Particle firstParticle();
-    Particle secondParticle(firstVector2D, secondVector2D, 10.0);
-
-    cout << firstParticle << endl;
-    cout << secondParticle << endl;
-
+    cout << particleOne;
 }
