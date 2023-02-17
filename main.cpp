@@ -10,7 +10,9 @@ using namespace std;
 
 int main(){
 
-    default_random_engine generator;
+    random_device myRandomDevice;
+    unsigned seed = myRandomDevice();
+    default_random_engine generator(seed);
     uniform_int_distribution<int> height(50, 100);
     uniform_int_distribution<int> velocity(1, 20);
     int y_pos = height(generator);
