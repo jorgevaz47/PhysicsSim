@@ -36,7 +36,17 @@ Vector2D calculateForce(Particle particle, Vector2D acceleration){
 
 int main(){
 
+    Vector2D gAccVec = Vector2D(0, GRAVITY);
+    Vector2D gForce;
+
     initializeParticles();
+
+    for(Particle p : particles){
+        gForce = calculateForce(p, gAccVec);
+
+        Vector2D newVel = Vector2D(test_Part.GetVelocity().GetX() + (gForce.GetX() / test_Part.GetMass()) * 1.0, test_Part.GetVelocity().GetY() + (gForce.GetY() / test_Part.GetMass()) * 1.0);
+        Vector2D newPos = Vector2D(test_Part.GetPosition().GetX() + test_Part.GetVelocity().GetX() * 1.0, test_Part.GetPosition().GetY() + test_Part.GetVelocity().GetY() * 1.0);
+    }
 
     int y_pos = height(generator);
     int x_vel = velocity(generator);
