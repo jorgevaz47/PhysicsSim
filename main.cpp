@@ -2,6 +2,7 @@
 #include "Vector2D.cpp"
 #include "Particle.h"
 #include "Particle.cpp"
+#include "RigidBody2D.h"
 #include "iostream"
 #include <iomanip>
 #include <random>
@@ -18,38 +19,47 @@ uniform_int_distribution<int> height(50, 100);
 uniform_int_distribution<int> velocity(0, 25);
 uniform_int_distribution<int> mass(1, 15);
 
-void initializeParticles(){
+void initializeParticles()
+{
 
-    for(int i = 0; i < NUM_PARTICLES; i++){
+    for (int i = 0; i < NUM_PARTICLES; i++)
+    {
         int y_pos = height(generator);
         int x_vel = velocity(generator);
         int y_vel = velocity(generator);
         int part_mass = mass(generator);
         particles[i] = Particle(Vector2D(0, y_pos), Vector2D(x_vel, y_vel), part_mass);
     }
-
 }
 
-Vector2D calculateForce(Particle particle, Vector2D acceleration){
+Vector2D calculateForce(Particle particle, Vector2D acceleration)
+{
     return Vector2D(particle.GetMass() * acceleration.GetX(), particle.GetMass() * acceleration.GetY());
 }
 
-int main(){
+float calculateMomentOfInertiaSquare(RigidBody2D square){
+    float length = square.GetLength();
+    float width = square.GetWidth();
+    float mass = square.GetMass();
+    return ((mass * (length * length + width * width)) / 12.0);
+}
+
+int main()
+{
 
     int tFinal = 10;
     int tInitial;
     int tChange = 1;
-    
+
     Vector2D gAccVec = Vector2D(0, GRAVITY);
     Vector2D gForce;
 
     initializeParticles();
 
-    
-
     int i = 0;
 
-    for(Particle p : particles){
+    for (Particle p : particles)
+    {
 
         tInitial = 0;
 
@@ -60,7 +70,8 @@ int main(){
         // Only needs to be calculated once since the mass of the particle is not changing
         gForce = calculateForce(p, gAccVec);
 
-        while(tInitial <= tFinal){
+        while (tInitial <= tFinal)
+        {
 
             // Calculating the new velocity and new position vector of the particle
             Vector2D newVel = Vector2D(p.GetVelocity().GetX() + (gForce.GetX() / p.GetMass()) * 1.0, p.GetVelocity().GetY() + (gForce.GetY() / p.GetMass()) * 1.0);
@@ -78,7 +89,8 @@ int main(){
         }
 
         i++;
-
     }
+
+    RigidBody2D test;
 
 }
