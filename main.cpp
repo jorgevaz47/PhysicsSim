@@ -3,6 +3,8 @@
 #include "Particle.h"
 #include "Particle.cpp"
 #include "RigidBody2D.h"
+#include "Square.h"
+#include "Square.cpp"
 #include "iostream"
 #include <iomanip>
 #include <random>
@@ -35,13 +37,6 @@ void initializeParticles()
 Vector2D calculateForce(Particle particle, Vector2D acceleration)
 {
     return Vector2D(particle.GetMass() * acceleration.GetX(), particle.GetMass() * acceleration.GetY());
-}
-
-float calculateMomentOfInertiaSquare(RigidBody2D square){
-    float length = square.GetLength();
-    float width = square.GetWidth();
-    float mass = square.GetMass();
-    return ((mass * (length * length + width * width)) / 12.0);
 }
 
 int main()
@@ -91,6 +86,6 @@ int main()
         i++;
     }
 
-    RigidBody2D test;
+    RigidBody2D test();
 
 }

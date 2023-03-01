@@ -1,15 +1,13 @@
 #pragma once
 #define RIGIDBODY_2D_H
 #include "Particle.h"
+#include "Shape.h"
 
 class RigidBody2D: public Particle
 {
 public:
-    float GetLength() const { return length; };
-    float GetWidth() const { return width; };
-    void SetLength(float newLength);
-    void SetWidth(float newWidth);
+    RigidBody2D() : Particle() {};
+    float CalculateInertia();
 private:
-    float length;
-    float width;
+    Shape colliderShape;
 };
