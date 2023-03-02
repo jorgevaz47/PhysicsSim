@@ -86,6 +86,7 @@ int main()
         i++;
     }
 
-    RigidBody2D test();
+    RigidBody2D test = RigidBody2D();
+
 
 }
