@@ -6,10 +6,12 @@
 #include <iomanip>
 #include <random>
 #include <chrono>
+#include <SDL2/SDL.h>
 
 using namespace std;
 
-const int NUM_PARTICLES = 2;
+const int NUM_PARTICLES = 1;
+const int WIDTH = 800, HEIGHT = 600;
 float GRAVITY = -9.81;
 
 Particle particles[NUM_PARTICLES];
@@ -36,7 +38,7 @@ Vector2D calculateForce(Particle particle, Vector2D acceleration)
     return Vector2D(particle.GetMass() * acceleration.GetX(), particle.GetMass() * acceleration.GetY());
 }
 
-int main()
+int main(int argc, char *argv[])
 {
 
     int tFinal = 10;
@@ -50,6 +52,32 @@ int main()
 
     int i = 0;
 
+    SDL_Init(SDL_INIT_EVERYTHING);
+
+    SDL_Window *window = SDL_CreateWindow("Test run", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_ALLOW_HIGHDPI);
+
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+
+    
+
+    if(NULL == window){
+        cout << "Could not create window: " << SDL_GetError() << endl;
+        return 1;
+    }
+
+    SDL_Event windowEvent;
+
+    while(true){
+        if(SDL_PollEvent(&windowEvent)){
+            if(SDL_QUIT == windowEvent.type){
+                break;
+            }
+        }
+
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); //Background set to black
+        SDL_RenderClear(renderer);
+
+        
     for (Particle p : particles)
     {
 
@@ -73,6 +101,9 @@ int main()
             p.SetVelocity(newVel);
             p.SetPosition(newPos);
 
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            SDL_RenderDrawPoint(renderer, p.GetPosition().GetX(), -p.GetPosition().GetY());
+
             // Displaying velocity and position update
             cout << i << " " << p << endl;
 
@@ -82,6 +113,18 @@ int main()
 
         i++;
     }
+
+        SDL_RenderPresent(renderer);
+    }
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+
+    return EXIT_SUCCESS;
+
+    
+
 
     RigidBody2D test = RigidBody2D();
 
