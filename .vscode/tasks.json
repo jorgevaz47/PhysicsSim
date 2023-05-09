@@ -4,11 +4,15 @@
 		{
 			"type": "cppbuild",
 			"label": "C/C++: g++.exe build active file",
-			"command": "C:\\MinGW64\\MinGW64\\bin\\g++.exe",
+			"command": "C:\\msys64\\mingw64\\bin\\g++.exe",
 			"args": [
 				"-fdiagnostics-color=always",
 				"-g",
-				"${file}",
+				"${fileDirname}\\${fileBasenameNoExtension}.cpp",
+				"${fileDirname}\\Square.cpp",
+				"${fileDirname}\\Particle.cpp",
+				"${fileDirname}\\Vector2D.cpp",
+				"${fileDirname}\\RigidBody2D.cpp",
 				"-o",
 				"${fileDirname}\\${fileBasenameNoExtension}.exe"
 			],

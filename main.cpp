@@ -1,11 +1,8 @@
 #include "Vector2D.h"
-#include "Vector2D.cpp"
 #include "Particle.h"
-#include "Particle.cpp"
 #include "RigidBody2D.h"
 #include "Square.h"
-#include "Square.cpp"
-#include "iostream"
+#include <iostream>
 #include <iomanip>
 #include <random>
 #include <chrono>
@@ -87,6 +84,5 @@ int main()
     }
 
     RigidBody2D test = RigidBody2D();
-
 
 }

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "c:/Users/jav20/Desktop/Coding/C++/PhysicsSim",
-      "program": "c:/Users/jav20/Desktop/Coding/C++/PhysicsSim/main.exe",
+      "cwd": "${fileDirname}",
+      "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
