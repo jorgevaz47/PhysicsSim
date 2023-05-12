@@ -11,9 +11,10 @@
 using namespace std;
 
 // Initializing Constants
-const int NUM_PARTICLES = 5; // Number of particles to simulate
+const int NUM_PARTICLES = 1; // Number of particles to simulate
 const int WIDTH = 800, HEIGHT = 600; // Parameters for SDL window
 const float GRAVITY = 9.81; // Acceleration due to gravity (m/s^2)
+const float TIME = 0.5;
 
 // Allocating an array with size NUM_PARTICLES of Particle objects
 Particle particles[NUM_PARTICLES];
@@ -24,6 +25,12 @@ uniform_int_distribution<int> length(50, 500);
 uniform_int_distribution<int> height(50, 100);
 uniform_int_distribution<int> velocity(0, 25);
 uniform_int_distribution<int> mass(1, 15);
+
+// Prototype functions
+void initializeParticles();
+Vector2D calculateForce(Particle particle, Vector2D acceleration);
+void updateParticle(Particle particleArray[], int arraySize);
+bool outOfBounds(Vector2D pos, char axis);
 
 // This function works by creating particle objects with random parameters
 // It then places them into the array particles
@@ -51,8 +58,63 @@ Vector2D calculateForce(Particle particle, Vector2D acceleration)
 
 // TODO: Create function so that it encapsulates the updating of particle's position and velocity
 //       Also use another function to detect for boundaries
-void updateParticle()
+void updateParticle(Particle particleArray[], int arraySize)
 {
+    for(int i = 0; i < arraySize; i++){
+        Particle& p = particleArray[i];
+
+        // Calculate the force on the particle due to gravity
+        Vector2D gForce = Vector2D(calculateForce(p, Vector2D(0, GRAVITY)));
+
+        // Calculates the new velocity and then the new position of the particle
+        Vector2D newVel = Vector2D(p.GetVelocity().GetX() + (gForce.GetX() / p.GetMass()) * TIME, p.GetVelocity().GetY() + (gForce.GetY() / p.GetMass()) * TIME);
+
+        cout << "newVel" << newVel << endl;
+
+        // TEST OPPOSING FORCE
+        Vector2D airResistance = Vector2D(0, p.GetPosition().GetY() / p.GetVelocity().GetY() / 10000);
+        if(newVel.GetY() > 0){
+            cout << "Slowing down ball" << endl;
+            newVel.SetY(newVel.GetY() - airResistance.GetY());
+        }
+        
+
+        Vector2D newPos = Vector2D(p.GetPosition().GetX() + p.GetVelocity().GetX() * TIME, p.GetPosition().GetY() + p.GetVelocity().GetY() * TIME);
+
+        // Out-of-bounds checker
+        if(outOfBounds(newPos, 'X')){
+            newVel.SetX(-newVel.GetX());
+            newPos.SetX(p.GetPosition().GetX() + newVel.GetX() * TIME);
+        }
+        if(outOfBounds(newPos, 'Y')){
+            newVel.SetY(-newVel.GetY() + 25);
+            if(p.GetPosition().GetY() + newVel.GetY() * TIME > 550){
+                cout << "Reached bottom of ground" << endl;
+                newPos.SetY(550);
+            } else{
+                newPos.SetY(p.GetPosition().GetY() + newVel.GetY() * TIME);
+            }
+        }
+
+        p.SetVelocity(newVel);
+        p.SetPosition(newPos);
+
+    }
+}
+
+bool outOfBounds(Vector2D pos, char axis){
+    if(axis == 'X'){
+        if(pos.GetX() < 50 || pos.GetX() > 750){
+            return true;
+        }
+    }
+    if(axis == 'Y'){
+        if(pos.GetY() < 50 || pos.GetY() > 550){
+            return true;
+        }
+    }
+    return false;
+    
 }
 
 int main(int argc, char *argv[])
@@ -86,6 +148,9 @@ int main(int argc, char *argv[])
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Set draw color to black
     SDL_RenderClear(renderer); // Set the entire window to black
 
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    SDL_RenderDrawLine(renderer, 0, 550, 800, 550);
+
     // This will run while the window is open
     while (true)
     {
@@ -104,44 +169,12 @@ int main(int argc, char *argv[])
             {   
                 // Checks if pressed key is the spacebar
                 if (SDLK_SPACE == event.key.keysym.sym)
-                {
-                    for (Particle &p : particles)
-                    {
-
-                        // Calculate the force on the particle due to gravity
-                        gForce = calculateForce(p, gAccVec);
-
-                        // Calculates the new velocity and then the new position of the particle
-                        Vector2D newVel = Vector2D(p.GetVelocity().GetX() + (gForce.GetX() / p.GetMass()) * 0.1, p.GetVelocity().GetY() + (gForce.GetY() / p.GetMass()) * 0.1);
-                        Vector2D newPos = Vector2D(p.GetPosition().GetX() + p.GetVelocity().GetX() * 0.1, p.GetPosition().GetY() + p.GetVelocity().GetY() * 0.1);
-
-                        // FOR DEBUGGING PURPOSES UNCOMMENT THIS
-                        // cout << "New Pos: " << newPos << endl;
-
-                        // Draw a white line between the old position to the new position of the particle
-                        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-                        SDL_RenderDrawLine(renderer, p.GetPosition().GetX(), p.GetPosition().GetY(), newPos.GetX(), newPos.GetY());
-
-                        // Draw a red point on the old position
-                        // This really can't be distinguished because of how close each point is drawn
-                        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+                {   
+                    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                    for(Particle p : particles){
                         SDL_RenderDrawPoint(renderer, p.GetPosition().GetX(), p.GetPosition().GetY());
-
-                        // Update the particles velocity and position
-                        p.SetVelocity(newVel);
-                        p.SetPosition(newPos);
-
-                        // Boundary checks
-                        // If any are out-of-bounds, flip the respective velocity
-                        if(newPos.GetX() < 50 || newPos.GetX() > 750){
-                            p.SetPosition(Vector2D(newPos.GetX(), p.GetPosition().GetY()));
-                            p.SetVelocity(Vector2D(-p.GetVelocity().GetX(), p.GetVelocity().GetY()));
-                        }
-                        if(newPos.GetY() < 50 || newPos.GetY() > 550){
-                            p.SetPosition(Vector2D(p.GetPosition().GetX(), newPos.GetY()));
-                            p.SetVelocity(Vector2D(p.GetVelocity().GetX(), -p.GetVelocity().GetY()));
-                        }
                     }
+                    updateParticle(particles, NUM_PARTICLES);
                 }
             }
         }
