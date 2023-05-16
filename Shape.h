@@ -1,5 +1,4 @@
 #pragma once
-#define SHAPE_H
 
 class Shape
 {

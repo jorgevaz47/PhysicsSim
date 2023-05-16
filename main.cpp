@@ -14,7 +14,7 @@ using namespace std;
 const int NUM_PARTICLES = 1; // Number of particles to simulate
 const int WIDTH = 800, HEIGHT = 600; // Parameters for SDL window
 const float GRAVITY = 9.81; // Acceleration due to gravity (m/s^2)
-const float TIME = 0.5;
+const float TIME = 0.5; // Time step
 
 // Allocating an array with size NUM_PARTICLES of Particle objects
 Particle particles[NUM_PARTICLES];
@@ -31,91 +31,6 @@ void initializeParticles();
 Vector2D calculateForce(Particle particle, Vector2D acceleration);
 void updateParticle(Particle particleArray[], int arraySize);
 bool outOfBounds(Vector2D pos, char axis);
-
-// This function works by creating particle objects with random parameters
-// It then places them into the array particles
-void initializeParticles()
-{
-    for (int i = 0; i < NUM_PARTICLES; i++)
-    {   
-        int x_pos = length(generator);
-        int y_pos = height(generator);
-        int x_vel = velocity(generator);
-        int y_vel = velocity(generator);
-        int part_mass = mass(generator);
-        particles[i] = Particle(Vector2D(x_pos, y_pos), Vector2D(x_vel, y_vel), part_mass);
-    }
-}
-
-// Calculutes the force on a particle given an accleration due to a force
-// In this case the acceleration is due to gravity
-// Returns a Vector2D representing the force vector
-// Follows Newton's second law of motion (F=ma)
-Vector2D calculateForce(Particle particle, Vector2D acceleration)
-{
-    return Vector2D(particle.GetMass() * acceleration.GetX(), particle.GetMass() * acceleration.GetY());
-}
-
-// TODO: Create function so that it encapsulates the updating of particle's position and velocity
-//       Also use another function to detect for boundaries
-void updateParticle(Particle particleArray[], int arraySize)
-{
-    for(int i = 0; i < arraySize; i++){
-        Particle& p = particleArray[i];
-
-        // Calculate the force on the particle due to gravity
-        Vector2D gForce = Vector2D(calculateForce(p, Vector2D(0, GRAVITY)));
-
-        // Calculates the new velocity and then the new position of the particle
-        Vector2D newVel = Vector2D(p.GetVelocity().GetX() + (gForce.GetX() / p.GetMass()) * TIME, p.GetVelocity().GetY() + (gForce.GetY() / p.GetMass()) * TIME);
-
-        cout << "newVel" << newVel << endl;
-
-        // TEST OPPOSING FORCE
-        Vector2D airResistance = Vector2D(0, p.GetPosition().GetY() / p.GetVelocity().GetY() / 10000);
-        if(newVel.GetY() > 0){
-            cout << "Slowing down ball" << endl;
-            newVel.SetY(newVel.GetY() - airResistance.GetY());
-        }
-        
-
-        Vector2D newPos = Vector2D(p.GetPosition().GetX() + p.GetVelocity().GetX() * TIME, p.GetPosition().GetY() + p.GetVelocity().GetY() * TIME);
-
-        // Out-of-bounds checker
-        if(outOfBounds(newPos, 'X')){
-            newVel.SetX(-newVel.GetX());
-            newPos.SetX(p.GetPosition().GetX() + newVel.GetX() * TIME);
-        }
-        if(outOfBounds(newPos, 'Y')){
-            newVel.SetY(-newVel.GetY() + 25);
-            if(p.GetPosition().GetY() + newVel.GetY() * TIME > 550){
-                cout << "Reached bottom of ground" << endl;
-                newPos.SetY(550);
-            } else{
-                newPos.SetY(p.GetPosition().GetY() + newVel.GetY() * TIME);
-            }
-        }
-
-        p.SetVelocity(newVel);
-        p.SetPosition(newPos);
-
-    }
-}
-
-bool outOfBounds(Vector2D pos, char axis){
-    if(axis == 'X'){
-        if(pos.GetX() < 50 || pos.GetX() > 750){
-            return true;
-        }
-    }
-    if(axis == 'Y'){
-        if(pos.GetY() < 50 || pos.GetY() > 550){
-            return true;
-        }
-    }
-    return false;
-    
-}
 
 int main(int argc, char *argv[])
 {
@@ -186,4 +101,91 @@ int main(int argc, char *argv[])
     SDL_Quit();
 
     return EXIT_SUCCESS;
+}
+
+
+// This function works by creating particle objects with random parameters
+// It then places them into the array particles
+void initializeParticles()
+{
+    for (int i = 0; i < NUM_PARTICLES; i++)
+    {   
+        int x_pos = length(generator);
+        int y_pos = height(generator);
+        int x_vel = velocity(generator);
+        int y_vel = velocity(generator);
+        int part_mass = mass(generator);
+        particles[i] = Particle(Vector2D(x_pos, y_pos), Vector2D(x_vel, y_vel), part_mass);
+    }
+}
+
+// Calculutes the force on a particle given an accleration due to a force
+// In this case the acceleration is due to gravity
+// Returns a Vector2D representing the force vector
+// Follows Newton's second law of motion (F=ma)
+Vector2D calculateForce(Particle particle, Vector2D acceleration)
+{
+    return Vector2D(particle.GetMass() * acceleration.GetX(), particle.GetMass() * acceleration.GetY());
+}
+
+
+void updateParticle(Particle particleArray[], int arraySize)
+{
+    for(int i = 0; i < arraySize; i++){
+        Particle& p = particleArray[i];
+
+        // Calculate the force on the particle due to gravity
+        Vector2D gForce = Vector2D(calculateForce(p, Vector2D(0, GRAVITY)));
+
+        // Calculates the new velocity and then the new position of the particle
+        Vector2D newVel = Vector2D(p.GetVelocity().GetX() + (gForce.GetX() / p.GetMass()) * TIME, p.GetVelocity().GetY() + (gForce.GetY() / p.GetMass()) * TIME);
+
+        cout << "newVel" << newVel << endl;
+
+        // TEST OPPOSING FORCE
+        Vector2D airResistance = Vector2D(0, p.GetPosition().GetY() / p.GetVelocity().GetY() / 10000);
+        if(newVel.GetY() > 0){
+            cout << "Slowing down ball" << endl;
+            newVel.SetY(newVel.GetY() - airResistance.GetY());
+        }
+        
+
+        Vector2D newPos = Vector2D(p.GetPosition().GetX() + p.GetVelocity().GetX() * TIME, p.GetPosition().GetY() + p.GetVelocity().GetY() * TIME);
+
+        // Out-of-bounds checker
+        if(outOfBounds(newPos, 'X')){
+            // cout << "---OUT OF BOUNDS IN THE X COORDINATE---" << endl;
+            newVel.SetX(-newVel.GetX());
+            newPos.SetX(p.GetPosition().GetX() + newVel.GetX() * TIME);
+        }
+        if(outOfBounds(newPos, 'Y')){
+            // cout << "---OUT OF BOUNDS IN THE Y COORDINATE---" << endl;
+            // Recalculate the X-Position and X-Velocity of the particle
+            newPos.SetY(550);
+            float time = abs((newPos.GetY() - p.GetPosition().GetY()) / (newVel.GetY()));
+            // newVel.SetX(p.GetVelocity().GetX() + (gForce.GetX() / p.GetMass()) * time);
+            newPos.SetX(p.GetPosition().GetX() + newVel.GetX() * time);
+            newVel.SetY(-newVel.GetY() + 25);
+        }
+
+        p.SetVelocity(newVel);
+        p.SetPosition(newPos);
+        cout << p.GetPosition() << endl;
+
+    }
+}
+
+bool outOfBounds(Vector2D pos, char axis){
+    if(axis == 'X'){
+        if(pos.GetX() < 50 || pos.GetX() > 750){
+            return true;
+        }
+    }
+    if(axis == 'Y'){
+        if(pos.GetY() < 50 || pos.GetY() > 550){
+            return true;
+        }
+    }
+    return false;
+    
 }

@@ -1,5 +1,4 @@
 #pragma once
-#define RIGIDBODY_2D_H
 #include "Particle.h"
 #include "Square.h"
 

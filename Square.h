@@ -1,5 +1,4 @@
 #pragma once
-#define SQUARE_H
 #include "Shape.h"
 
 class Square: public Shape 

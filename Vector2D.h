@@ -1,5 +1,4 @@
 #pragma once
-#define VECTOR2D_H
 #include <iostream>
 
 class Vector2D

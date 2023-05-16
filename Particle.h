@@ -1,5 +1,4 @@
 #pragma once
-#define PARTICLE_H
 #include "Vector2D.h"
 
 class Particle
