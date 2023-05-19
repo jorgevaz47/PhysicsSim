@@ -1,3 +1,9 @@
+/* Name: Jorge Vazuqez
+ * Date: 5/18/2023
+ * Description: RigidBody2D header file
+ * UNUSED IN PROJECT
+*/
+
 #pragma once
 #include "Particle.h"
 #include "Square.h"

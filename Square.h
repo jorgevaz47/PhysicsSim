@@ -1,3 +1,9 @@
+/* Name: Jorge Vazuqez
+ * Date: 5/18/2023
+ * Description: Shaper header file
+ * UNUSED IN PROJECT
+ * 
+*/
 #pragma once
 #include "Shape.h"
 

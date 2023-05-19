@@ -13,6 +13,8 @@
 				"${fileDirname}\\Particle.cpp",
 				"${fileDirname}\\Vector2D.cpp",
 				"${fileDirname}\\RigidBody2D.cpp",
+				"${fileDirname}\\Node.cpp",
+				"${fileDirname}\\Stack.cpp",
 				"-l",
 				"mingw32",
 				"-l",

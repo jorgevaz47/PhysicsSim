@@ -1,3 +1,9 @@
+/* Name: Jorge Vazuqez
+ * Date: 5/18/2023
+ * Description: Particle header file
+ * 
+*/
+
 #pragma once
 #include "Vector2D.h"
 

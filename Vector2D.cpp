@@ -1,3 +1,9 @@
+/* Name: Jorge Vazuqez
+ * Date: 5/18/2023
+ * Description: Vector2D implementation file
+ * 
+*/
+
 #include "Vector2D.h"
 #include "iostream"
 
