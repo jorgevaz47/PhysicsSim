@@ -31,6 +31,8 @@ void initializeParticles();
 Vector2D calculateForce(Particle particle, Vector2D acceleration);
 void updateParticle(Particle particleArray[], int arraySize);
 bool outOfBounds(Vector2D pos, char axis);
+void drawBackground(SDL_Renderer* renderer);
+void drawParticle(SDL_Renderer* renderer, Particle p);
 
 int main(int argc, char *argv[])
 {
@@ -57,14 +59,16 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    drawBackground(renderer);
+    
     // Creating a variable to hold SDL_Event's
     SDL_Event event;
 
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Set draw color to black
-    SDL_RenderClear(renderer); // Set the entire window to black
+    // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Set draw color to black
+    // SDL_RenderClear(renderer); // Set the entire window to black
 
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    SDL_RenderDrawLine(renderer, 0, 550, 800, 550);
+    // SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    // SDL_RenderDrawLine(renderer, 0, 550, 800, 550);
 
     // This will run while the window is open
     while (true)
@@ -85,9 +89,12 @@ int main(int argc, char *argv[])
                 // Checks if pressed key is the spacebar
                 if (SDLK_SPACE == event.key.keysym.sym)
                 {   
-                    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
                     for(Particle p : particles){
-                        SDL_RenderDrawPoint(renderer, p.GetPosition().GetX(), p.GetPosition().GetY());
+                        // Use this to visualize the velocity vectors of the particle
+                        // SDL_SetRenderDrawColor(renderer, 255, 0, 0, 122);
+                        // SDL_RenderDrawLine(renderer, p.GetPosition().GetX(), p.GetPosition().GetY(), p.GetPosition().GetX() + p.GetVelocity().GetX() / 5, p.GetPosition().GetY() + p.GetVelocity().GetY() / 5);
+                        
+                        drawParticle(renderer, p);
                     }
                     updateParticle(particles, NUM_PARTICLES);
                 }
@@ -128,9 +135,9 @@ Vector2D calculateForce(Particle particle, Vector2D acceleration)
     return Vector2D(particle.GetMass() * acceleration.GetX(), particle.GetMass() * acceleration.GetY());
 }
 
-
+// Updates each particle's velocity and position and does a bounary check to ensure that each particle is within the bounds
 void updateParticle(Particle particleArray[], int arraySize)
-{
+{   
     for(int i = 0; i < arraySize; i++){
         Particle& p = particleArray[i];
 
@@ -170,11 +177,11 @@ void updateParticle(Particle particleArray[], int arraySize)
 
         p.SetVelocity(newVel);
         p.SetPosition(newPos);
-        cout << p.GetPosition() << endl;
 
     }
 }
 
+// Simple out-of-bounds algorithm
 bool outOfBounds(Vector2D pos, char axis){
     if(axis == 'X'){
         if(pos.GetX() < 50 || pos.GetX() > 750){
@@ -188,4 +195,48 @@ bool outOfBounds(Vector2D pos, char axis){
     }
     return false;
     
+}
+
+// This method is used to draw the background of this application
+void drawBackground(SDL_Renderer* renderer){
+
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+    SDL_RenderClear(renderer);
+
+    SDL_Rect ground{0, 550, 800, 50};
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderDrawRect(renderer, &ground);
+    SDL_RenderFillRect(renderer, &ground);
+
+    SDL_Rect pole{700, 350, 10, 200};
+
+    SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
+    SDL_RenderDrawRect(renderer, &pole);
+    SDL_RenderFillRect(renderer, &pole);
+
+    SDL_Rect netHolder{665, 365, 35, 5};
+
+    SDL_SetRenderDrawColor(renderer, 235, 55, 27, 255);
+    SDL_RenderDrawRect(renderer, &netHolder);
+    SDL_RenderFillRect(renderer, &netHolder);
+
+    SDL_RenderPresent(renderer);
+}
+
+// This draws each 
+void drawParticle(SDL_Renderer* renderer, Particle p){
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderDrawPoint(renderer, p.GetPosition().GetX(), p.GetPosition().GetY());
+
+    for(int i = -3; i <= 0; i++){
+        for(int j = i + 3; j >= 0; j--){
+            SDL_RenderDrawPoint(renderer, p.GetPosition().GetX() + j, p.GetPosition().GetY() + i);
+            SDL_RenderDrawPoint(renderer, p.GetPosition().GetX() - j, p.GetPosition().GetY() - i);
+            SDL_RenderDrawPoint(renderer, p.GetPosition().GetX() + j, p.GetPosition().GetY() - i);
+            SDL_RenderDrawPoint(renderer, p.GetPosition().GetX() - j, p.GetPosition().GetY() + i);
+        }
+    }
+
 }
