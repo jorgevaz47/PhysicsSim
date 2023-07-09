@@ -4,11 +4,11 @@
  * 
 */
 
-#include "Vector2D.h"
-#include "Particle.h"
-#include "RigidBody2D.h"
-#include "Square.h"
-#include "Stack.h"
+#include "../PhysicsSim/include/Vector2D.h"
+#include "../PhysicsSim/include/Particle.h"
+#include "../PhysicsSim/include/RigidBody2D.h"
+#include "../PhysicsSim/include/Square.h"
+#include "../PhysicsSim/include/Stack.h"
 #include <iostream>
 #include <iomanip>
 #include <random>
